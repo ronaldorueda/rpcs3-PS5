@@ -1,0 +1,18 @@
+# Fast sanity check on every push/PR: shellcheck (which includes a parse check) over
+# every script in tools/. Catches breakage like a stray quote before anyone has to run
+# the script against real hardware to notice. Does not touch deps/ (fetched, not
+# tracked here) or attempt an actual build -- that needs the full PS5 toolchain and
+# takes hours; see tools/bootstrap.sh.
+name: Lint shell scripts
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck tools/*.sh
+        run: shellcheck tools/*.sh
